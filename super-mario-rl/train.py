@@ -16,7 +16,7 @@ env = DummyVecEnv([lambda: env])
 env = VecFrameStack(env, 4, channels_order="last")
 
 state = env.reset()
-state, reward, done, info = env.step([5])
+# state, reward, done, info = env.step([5])
 
 # plt.figure(figsize=(20, 16))
 # for idx in range(state.shape[3]):
@@ -48,15 +48,21 @@ class TrainAndLoggingCallback(BaseCallback):
 CHECKPOINT_DIR = "./trained-models/"
 LOG_DIR = "./logs/"
 
-callback = TrainAndLoggingCallback(check_freq=10000, save_path=CHECKPOINT_DIR)
-model = PPO(
-    "CnnPolicy",
-    env,
-    verbose=1,
-    # tensorboard_log=LOG_DIR,
-    learning_rate=0.000001,
-    n_steps=512,
-    device="mps",
-)
+callback = TrainAndLoggingCallback(check_freq=1000, save_path=CHECKPOINT_DIR)
 
-model.learn(total_timesteps=20000, callback=callback)
+# Initial training
+# model = PPO(
+#     "CnnPolicy",
+#     env,
+#     verbose=1,
+#     # tensorboard_log=LOG_DIR,
+#     learning_rate=0.000001,
+#     n_steps=512,
+#     device="mps",
+# )
+
+# Continue
+model = PPO.load(path=f"{CHECKPOINT_DIR}best_model_3000", device="mps")
+model.set_env(env)
+
+model.learn(total_timesteps=1000, callback=callback, reset_num_timesteps=False)
