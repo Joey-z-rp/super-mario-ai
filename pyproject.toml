@@ -15,6 +15,7 @@ torch = "^2.2.1"
 shimmy = "^0.2.1"
 opencv-python = "^4.9.0.80"
 gym = "0.21.0"
+tensorboard = "^2.16.2"
 
 [build-system]
 requires = ["poetry-core"]

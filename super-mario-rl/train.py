@@ -46,23 +46,23 @@ class TrainAndLoggingCallback(BaseCallback):
 
 
 CHECKPOINT_DIR = "./trained-models/"
-LOG_DIR = "./logs/"
+LOG_DIR = "./training-logs/"
 
 callback = TrainAndLoggingCallback(check_freq=1000, save_path=CHECKPOINT_DIR)
 
 # Initial training
-# model = PPO(
-#     "CnnPolicy",
-#     env,
-#     verbose=1,
-#     # tensorboard_log=LOG_DIR,
-#     learning_rate=0.000001,
-#     n_steps=512,
-#     device="mps",
-# )
+model = PPO(
+    "CnnPolicy",
+    env,
+    verbose=1,
+    tensorboard_log=LOG_DIR,
+    learning_rate=0.000001,
+    n_steps=512,
+    device="mps",
+)
 
 # Continue
-model = PPO.load(path=f"{CHECKPOINT_DIR}best_model_3000", device="mps")
-model.set_env(env)
+# model = PPO.load(path=f"{CHECKPOINT_DIR}best_model_3000", device="mps")
+# model.set_env(env)
 
 model.learn(total_timesteps=1000, callback=callback, reset_num_timesteps=False)
