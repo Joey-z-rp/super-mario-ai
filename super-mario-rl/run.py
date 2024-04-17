@@ -6,7 +6,7 @@ import time
 if __name__ == "__main__":
     env = setup_env("SuperMarioBros-v0", 1)
 
-    model_name = "ppo_model_16000_steps"
+    model_name = "ppo_model_40000_steps"
     model = PPO.load(f"{CHECKPOINT_DIR}{model_name}")
     state = env.reset()
 

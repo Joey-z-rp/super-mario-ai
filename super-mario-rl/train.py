@@ -39,7 +39,7 @@ if __name__ == "__main__":
     #     plt.imshow(state[0][:, :, idx])
     # plt.show()
 
-    callback = TrainAndLoggingCallback(check_freq=2000, save_path=CHECKPOINT_DIR)
+    callback = TrainAndLoggingCallback(check_freq=20000, save_path=CHECKPOINT_DIR)
 
     # Initial training
     model = PPO(
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     # model.set_env(env)
 
     model.learn(
-        total_timesteps=10000,
+        total_timesteps=50000,
         callback=callback,
         reset_num_timesteps=False,
     )
