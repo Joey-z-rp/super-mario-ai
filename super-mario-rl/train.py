@@ -39,7 +39,7 @@ if __name__ == "__main__":
     #     plt.imshow(state[0][:, :, idx])
     # plt.show()
 
-    callback = TrainAndLoggingCallback(check_freq=20000, save_path=CHECKPOINT_DIR)
+    callback = TrainAndLoggingCallback(check_freq=15000, save_path=CHECKPOINT_DIR)
 
     # Initial training
     model = PPO(
@@ -47,18 +47,18 @@ if __name__ == "__main__":
         env,
         verbose=1,
         tensorboard_log=LOG_DIR,
-        learning_rate=0.00001,
+        learning_rate=0.000001,
         n_steps=2048,
         device="mps",
     )
 
     # Continue
-    # model_name = "ppo_model_4000_steps"
+    # model_name = "ppo_model_2080000_steps"
     # model = PPO.load(path=f"{CHECKPOINT_DIR}{model_name}", device="mps")
     # model.set_env(env)
 
     model.learn(
-        total_timesteps=50000,
+        total_timesteps=20000000,
         callback=callback,
         reset_num_timesteps=False,
     )
