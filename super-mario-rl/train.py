@@ -31,7 +31,7 @@ class TrainAndLoggingCallback(BaseCallback):
 
 if __name__ == "__main__":
     # Setup game
-    env = setup_env("SuperMarioBrosRandom-v0")
+    env = setup_env("SuperMarioBrosRandomStages-v0")
 
     state = env.reset()
     # state, reward, done, info = env.step([5])

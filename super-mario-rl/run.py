@@ -4,9 +4,9 @@ from stable_baselines3 import PPO
 import time
 
 if __name__ == "__main__":
-    env = setup_env("SuperMarioBros-1-1-v0", 1)
+    env = setup_env("SuperMarioBrosRandomStages-v0", 1)
 
-    model_name = "ppo_model_14000000_steps"
+    model_name = "ppo_model_7800000_steps"
     model = PPO.load(f"{CHECKPOINT_DIR}{model_name}")
     state = env.reset()
 
