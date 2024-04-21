@@ -2,7 +2,7 @@ import gym_super_mario_bros
 from nes_py.wrappers import JoypadSpace
 from gym_super_mario_bros.actions import COMPLEX_MOVEMENT
 from gym.wrappers import GrayScaleObservation, ResizeObservation
-from gym import Env
+from gym import Wrapper
 from stable_baselines3.common.vec_env import VecFrameStack, SubprocVecEnv, VecMonitor
 from stable_baselines3.common.atari_wrappers import MaxAndSkipEnv
 from stable_baselines3.common.utils import set_random_seed
@@ -10,13 +10,10 @@ from stable_baselines3.common.utils import set_random_seed
 NUM_CPU_CORE = 8
 
 
-class MarioEnv(Env):
-    def __init__(self, env_id):
-        super(MarioEnv, self).__init__()
+class MarioEnv(Wrapper):
+    def __init__(self, env):
+        super(MarioEnv, self).__init__(env)
 
-        self.gym_mario_env = gym_super_mario_bros.make(env_id)
-        self.action_space = self.gym_mario_env.action_space
-        self.observation_space = self.gym_mario_env.observation_space
         self.last_info = None
 
     def step(self, action):
@@ -31,7 +28,7 @@ class MarioEnv(Env):
             else:
                 return 0
 
-        state, reward, done, info = self.gym_mario_env.step(action)
+        state, originalReward, done, info = self.env.step(action)
 
         if self.last_info is None:
             reward = 0
@@ -44,34 +41,23 @@ class MarioEnv(Env):
                 else 0
             )
             score = (info["score"] - self.last_info["score"]) / 100
-            flag = 100 if info["flag_get"] is True else 0
+            flag = 200 if info["flag_get"] is True else 0
             status = get_status_reward(self.last_info["status"], info["status"])
-            reward = moving_distance * 2 + time + score + status * 5 + flag + death
+            reward = (
+                moving_distance * 0 + time + score * 10 + status * 100 + flag + death
+            )
 
         if done:
             self.last_info = None
         else:
             self.last_info = info
 
-        return state, reward, done, info
-
-    def reset(self):
-        state = self.gym_mario_env.reset()
-        return state
-
-    def render(self, mode="human"):
-        return self.gym_mario_env.render(mode)
-
-    def close(self):
-        return self.gym_mario_env.close()
-
-    def seed(self, seed=None):
-        return self.gym_mario_env.seed(seed)
+        return state, originalReward, done, info
 
 
 def make_env(env_id, rank, seed=0):
     def _init():
-        env = MarioEnv(env_id)
+        env = MarioEnv(gym_super_mario_bros.make(env_id))
         env = JoypadSpace(env, COMPLEX_MOVEMENT)
         env = MaxAndSkipEnv(env, 4)
         env = ResizeObservation(env, shape=84)

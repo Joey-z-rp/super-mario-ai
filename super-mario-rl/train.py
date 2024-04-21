@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import BaseCallback
 import os
+from datetime import datetime
 
 
 class TrainAndLoggingCallback(BaseCallback):
@@ -22,13 +23,15 @@ class TrainAndLoggingCallback(BaseCallback):
                 self.save_path, "ppo_model_{}_steps".format(self.num_timesteps)
             )
             self.model.save(model_path)
+        if self.num_timesteps % 20000 == 0:
+            print(f"timesteps: {self.num_timesteps} ({datetime.now()})")
 
         return True
 
 
 if __name__ == "__main__":
     # Setup game
-    env = setup_env("SuperMarioBros-v0")
+    env = setup_env("SuperMarioBrosRandom-v0")
 
     state = env.reset()
     # state, reward, done, info = env.step([5])
@@ -39,7 +42,7 @@ if __name__ == "__main__":
     #     plt.imshow(state[0][:, :, idx])
     # plt.show()
 
-    callback = TrainAndLoggingCallback(check_freq=15000, save_path=CHECKPOINT_DIR)
+    callback = TrainAndLoggingCallback(check_freq=25000, save_path=CHECKPOINT_DIR)
 
     # Initial training
     model = PPO(
@@ -47,13 +50,12 @@ if __name__ == "__main__":
         env,
         verbose=1,
         tensorboard_log=LOG_DIR,
-        learning_rate=0.000001,
-        n_steps=2048,
+        learning_rate=0.00001,
         device="mps",
     )
 
     # Continue
-    # model_name = "ppo_model_2080000_steps"
+    # model_name = "ppo_model_600000_steps"
     # model = PPO.load(path=f"{CHECKPOINT_DIR}{model_name}", device="mps")
     # model.set_env(env)
 
@@ -61,4 +63,5 @@ if __name__ == "__main__":
         total_timesteps=20000000,
         callback=callback,
         reset_num_timesteps=False,
+        tb_log_name="speedrun-random-level",
     )
