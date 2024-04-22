@@ -20,7 +20,7 @@ class TrainAndLoggingCallback(BaseCallback):
     def _on_step(self):
         if self.n_calls % self.check_freq == 0:
             model_path = os.path.join(
-                self.save_path, "ppo_model_{}_steps".format(self.num_timesteps)
+                self.save_path, f"ppo_model_{self.num_timesteps}_steps"
             )
             self.model.save(model_path)
         if self.num_timesteps % 20000 == 0:
@@ -31,7 +31,7 @@ class TrainAndLoggingCallback(BaseCallback):
 
 if __name__ == "__main__":
     # Setup game
-    env = setup_env("SuperMarioBrosRandomStages-v0")
+    env = setup_env("SuperMarioBros-1-2-v0")
 
     state = env.reset()
     # state, reward, done, info = env.step([5])
@@ -52,10 +52,11 @@ if __name__ == "__main__":
         tensorboard_log=LOG_DIR,
         learning_rate=0.00001,
         device="mps",
+        ent_coef=0.01,
     )
 
     # Continue
-    # model_name = "ppo_model_600000_steps"
+    # model_name = "original-reward/ppo_model_4800000_steps"
     # model = PPO.load(path=f"{CHECKPOINT_DIR}{model_name}", device="mps")
     # model.set_env(env)
 
@@ -63,5 +64,5 @@ if __name__ == "__main__":
         total_timesteps=20000000,
         callback=callback,
         reset_num_timesteps=False,
-        tb_log_name="speedrun-random-level",
+        tb_log_name="score-1-2",
     )

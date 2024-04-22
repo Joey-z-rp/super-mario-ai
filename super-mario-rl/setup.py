@@ -61,7 +61,7 @@ class MarioEnv(Wrapper):
 
         self.state = state
 
-        return state, originalReward, done, info
+        return state, reward, done, info
 
     def render(self, mode="human"):
         return self.state if self.render_raw is True else self.env.render(mode)
